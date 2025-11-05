@@ -103,7 +103,8 @@ namespace DuckTest
         {
             Debug.Log(_logPrefix + "DrawCircles 调用。");
             ClearCircle();
-
+            AllLootboxesCache = UnityEngine.Object.FindObjectsOfType<InteractableLootbox>();
+            AllPickupsCache = UnityEngine.Object.FindObjectsOfType<InteractablePickup>();
             string playerSubSceneID = LevelManager.GetCurrentLevelInfo().activeSubSceneID;
             Debug.Log(_logPrefix + $"Player SubSceneID: '{playerSubSceneID ?? "null"}'");
 
@@ -125,10 +126,15 @@ namespace DuckTest
             foreach (var lootbox in AllLootboxesCache)
             {
                 string boxName = lootbox.name ?? string.Empty;
+                // 排除玩家仓库跟宠物背包
                 if (boxName.IndexOf("PetProxy") < 0 && boxName.IndexOf("PlayerStorage") < 0)
                 {
+                    // 筛选被标记物品的箱子，或者有价值高的物品的箱子
                     var isManuallyWishlistedList = lootbox.Inventory.Content
-                        .Where(x => ItemWishlist.GetWishlistInfo(x.TypeID).isManuallyWishlisted|| x.Value > 10000);
+                        .Where(x => x != null && (ItemWishlist.GetWishlistInfo(x.TypeID).isManuallyWishlisted || x.Value > 10000));
+
+                    // 有被标记物品的箱子跟有价值高物品的箱子就在地图上绘制出来
+
                     if (isManuallyWishlistedList?.Count() > 0)
                     {
                         foreach (var item in isManuallyWishlistedList)
