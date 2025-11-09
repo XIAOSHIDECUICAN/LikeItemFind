@@ -14,10 +14,12 @@ using Duckov.Scenes;
 using static UnityEngine.Splines.SplineInstantiate;
 using Duckov.MiniMaps.UI;
 using System.Reflection;
-using DuckTest.Models;
+using LikeItemFind.Models;
 using System.Xml.Linq;
+using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
-namespace DuckTest
+namespace LikeItemFind
 {
 
     public class ModBehaviour : Duckov.Modding.ModBehaviour
@@ -27,6 +29,7 @@ namespace DuckTest
         private HashSet<GameObject> _questCircleObjects = new HashSet<GameObject>();
         public InteractableLootbox[] AllLootboxesCache;
         public  InteractablePickup[] AllPickupsCache;
+        public bool ShowHighValueItem = false;
 
         void Awake()
         {
@@ -41,12 +44,34 @@ namespace DuckTest
             View.OnActiveViewChanged += OnActiveViewChanged;
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
+
+        
         void OnDisable()
         {
             Debug.Log(_logPrefix + "已禁用。取消订阅 取消关卡初始化成功跟监听视图变化 事件并清理缓存。");
             View.OnActiveViewChanged -= OnActiveViewChanged;
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
+        void Start()
+        {
+        }
+        // 不知道为什么我用这个方法电脑特别卡，暂时删除了
+        //void Update()
+        //{
+        //    // 按下pageUpKey展示高价值物品
+        //    if (Keyboard.current.pageUpKey.wasReleasedThisFrame)
+        //    {
+        //        ShowHighValueItem = true;
+        //        Debug.Log($"按下pageup1.3");
+        //    }
+        //    // 按下pageDownKey隐藏高价值物品
+        //    if (Keyboard.current.pageDownKey.wasReleasedThisFrame)
+        //    {
+        //        ShowHighValueItem = false;
+        //        Debug.Log($"按下pageup1.3");
+        //    }
+            
+        //}
         // 场景加载完以后扫描地图上掉落的东西，根据手动标记，是否显示地图上的位置
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
@@ -114,7 +139,7 @@ namespace DuckTest
             foreach (var pickup in AllPickupsCache)
             {
                 if (ItemWishlist.GetWishlistInfo(pickup.ItemAgent.Item.TypeID).isManuallyWishlisted
-                    || pickup.ItemAgent.Item.Value>10000)
+                    ||(ShowHighValueItem && pickup.ItemAgent.Item.Value>10000))
                 {
                     DrawQuestMarker(pickup.ItemAgent.transform.position, 10f, pickup.ItemAgent.Item.DisplayName);
                     circlesDrawn++;
@@ -129,9 +154,11 @@ namespace DuckTest
                 // 排除玩家仓库跟宠物背包
                 if (boxName.IndexOf("PetProxy") < 0 && boxName.IndexOf("PlayerStorage") < 0)
                 {
+                    Debug.Log($"箱子方法里的ShowHighValueItem={ShowHighValueItem}");
                     // 筛选被标记物品的箱子，或者有价值高的物品的箱子
                     var isManuallyWishlistedList = lootbox.Inventory.Content
-                        .Where(x => x != null && (ItemWishlist.GetWishlistInfo(x.TypeID).isManuallyWishlisted || x.Value > 10000));
+                        .Where(x => x != null && ItemWishlist.GetWishlistInfo(x.TypeID).isManuallyWishlisted
+                                    || (ShowHighValueItem && x.Value > 10000));
 
                     // 有被标记物品的箱子跟有价值高物品的箱子就在地图上绘制出来
 
@@ -239,6 +266,7 @@ namespace DuckTest
 
             return false;
         }
+        
 
     }
 }

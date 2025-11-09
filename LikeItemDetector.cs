@@ -1,12 +1,13 @@
-﻿using DuckTest.Models;
-using ItemStatsSystem;
+﻿using ItemStatsSystem;
 using System.Collections.Generic;
 using System.Linq;
+using LikeItemFind.Models;
 using UnityEngine;
 using static Unity.VisualScripting.Member;
 
 namespace DuckTest;
 
+// 已经废弃没有在使用了
 public class LikeItemDetector
 {
     public readonly HashSet<InteractableLootbox> AllLootboxesCache = new HashSet<InteractableLootbox>();

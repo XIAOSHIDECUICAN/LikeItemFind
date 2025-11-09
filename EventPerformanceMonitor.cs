@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace DuckTest
+namespace LikeItemFind
 {
+    // 测试在地图上绘制标记物品的性能
     public class EventPerformanceMonitor
     {
         private static Dictionary<string, float> eventTimings;
