@@ -1,6 +1,6 @@
 # LikeItemFind Mod
 
-一个用于在游戏地图上标记高价值物品和愿望单物品的 Unity Mod。
+一个用于在游戏地图上标记愿望单物品的 Unity Mod。
 
 ## 功能特性
 
