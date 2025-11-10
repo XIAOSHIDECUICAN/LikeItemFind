@@ -61,6 +61,7 @@ namespace LikeItemFind
             //// 按下LeftAlt切换展示高价值物品
             if (Input.GetKeyUp(KeyCode.LeftAlt))
             {
+                Debug.Log("切换");
                 IsShowHighValueItem = !IsShowHighValueItem;
             }
         }
@@ -131,7 +132,7 @@ namespace LikeItemFind
             foreach (var pickup in AllPickupsCache)
             {
                 if (ItemWishlist.GetWishlistInfo(pickup.ItemAgent.Item.TypeID).isManuallyWishlisted
-                    ||(IsShowHighValueItem && pickup.ItemAgent.Item.Value>10000))
+                    || (IsShowHighValueItem && pickup.ItemAgent.Item.Value > 10000))
                 {
                     DrawQuestMarker(pickup.ItemAgent.transform.position, 10f, pickup.ItemAgent.Item.DisplayName);
                     circlesDrawn++;
@@ -150,7 +151,7 @@ namespace LikeItemFind
                     // 筛选被标记物品的箱子，或者有价值高的物品的箱子
                     var isManuallyWishlistedList = lootbox.Inventory.Content
                         .Where(x => x != null && ItemWishlist.GetWishlistInfo(x.TypeID).isManuallyWishlisted
-                                    || (IsShowHighValueItem && x.Value > 10000));
+                                    || (IsShowHighValueItem && x!=null &&x.Value > 10000));
 
                     // 有被标记物品的箱子跟有价值高物品的箱子就在地图上绘制出来
 
