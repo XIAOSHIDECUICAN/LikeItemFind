@@ -131,16 +131,19 @@ namespace LikeItemFind
             // 绘制掉落物被标记的标记
             foreach (var pickup in AllPickupsCache)
             {
-                if (ItemWishlist.GetWishlistInfo(pickup.ItemAgent.Item.TypeID).isManuallyWishlisted
-                    || (IsShowHighValueItem && pickup.ItemAgent.Item.Value > 10000))
+                if (pickup != null && pickup.ItemAgent != null && pickup.ItemAgent.Item != null)
                 {
-                    DrawQuestMarker(pickup.ItemAgent.transform.position, 10f, pickup.ItemAgent.Item.DisplayName);
-                    circlesDrawn++;
+                    if (ItemWishlist.GetWishlistInfo(pickup.ItemAgent.Item.TypeID).isManuallyWishlisted
+                        || (IsShowHighValueItem && pickup.ItemAgent.Item.Value > 10000))
+                    {
+                        DrawQuestMarker(pickup.ItemAgent.transform.position, 10f, pickup.ItemAgent.Item.DisplayName);
+                        circlesDrawn++;
+                    }
                 }
             }
             Debug.Log(_logPrefix + $"尝试绘制箱子里被标记的东西标记...");
 
-            //// 绘制箱子里被标记的东西
+            ////// 绘制箱子里被标记的东西
             foreach (var lootbox in AllLootboxesCache)
             {
                 string boxName = lootbox.name ?? string.Empty;
@@ -151,7 +154,7 @@ namespace LikeItemFind
                     // 筛选被标记物品的箱子，或者有价值高的物品的箱子
                     var isManuallyWishlistedList = lootbox.Inventory.Content
                         .Where(x => x != null && ItemWishlist.GetWishlistInfo(x.TypeID).isManuallyWishlisted
-                                    || (IsShowHighValueItem && x!=null &&x.Value > 10000));
+                                    || (IsShowHighValueItem && x != null && x.Value > 10000));
 
                     // 有被标记物品的箱子跟有价值高物品的箱子就在地图上绘制出来
 
@@ -164,7 +167,7 @@ namespace LikeItemFind
                         }
                     }
                 }
-               
+
             }
 
             Debug.Log(_logPrefix + $"绘制了 {circlesDrawn} 个圆圈。");
